@@ -100,7 +100,6 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
 
                   final clientesFiltrados = todosClientes.where((doc) {
                     final dados = doc.data() as Map<String, dynamic>;
-                    final id = doc.id;
                     final nome = (dados['nome'] ?? '').toString().toLowerCase();
                     final email = (dados['email'] ?? '')
                         .toString()

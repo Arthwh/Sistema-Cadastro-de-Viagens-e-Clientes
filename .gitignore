@@ -27,6 +27,7 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
@@ -44,5 +45,19 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Firebase
+# Android Configs & Secrets (Não subir para o Git!)
+/android/.gradle
+/android/local.properties
+/android/key.properties
+**/*.keystore
+**/*.jks
+
+# Variaveis de Ambiente (Caso use o pacote flutter_dotenv no futuro)
+.env
+.env*
+
+# Firebase Configs (Proteção contra vazamento de chaves)
 lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist

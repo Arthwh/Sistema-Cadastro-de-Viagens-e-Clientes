@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:firebase_auth/firebase_auth.dart';
