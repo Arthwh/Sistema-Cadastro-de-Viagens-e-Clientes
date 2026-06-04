@@ -1,3 +1,4 @@
+import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:controle_viagens/widgets/botao_flutuante_responsivo.dart';
 import 'package:controle_viagens/widgets/card_listagem_cliente.dart';
@@ -99,6 +100,7 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
 
                   final clientesFiltrados = todosClientes.where((doc) {
                     final dados = doc.data() as Map<String, dynamic>;
+                    final id = doc.id;
                     final nome = (dados['nome'] ?? '').toString().toLowerCase();
                     final email = (dados['email'] ?? '')
                         .toString()
@@ -125,12 +127,10 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
                       final cliente =
                           clientesFiltrados[index].data()
                               as Map<String, dynamic>;
-
+                      final idCliente = clientesFiltrados[index].id;
+                      print('IDCLIENTE: ' + idCliente);
                       return ClienteCard(
-                        nome: cliente['nome'] ?? 'Sem nome',
-                        email: cliente['email'] ?? 'Sem e-mail',
-                        telefone: cliente['telefone'] ?? 'Sem telefone',
-                        cpf: cliente['cpf'] ?? '',
+                        usuario: Usuario.fromMap(idCliente, cliente),
                       );
                     },
                   );

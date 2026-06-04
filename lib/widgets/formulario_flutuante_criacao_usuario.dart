@@ -1,10 +1,12 @@
 import 'dart:math';
 import 'package:controle_viagens/models/tipo_perfil.dart';
+import 'package:controle_viagens/models/usuario.dart';
 import 'package:flutter/material.dart';
 import '../services/servico_usuarios.dart';
 
 class FormularioFlutuanteCriacaoUsuario extends StatefulWidget {
-  const FormularioFlutuanteCriacaoUsuario({super.key});
+  final Usuario? usuario;
+  const FormularioFlutuanteCriacaoUsuario({super.key, this.usuario});
 
   @override
   State<FormularioFlutuanteCriacaoUsuario> createState() =>
@@ -25,18 +27,42 @@ class _FormularioFlutuanteCriacaoUsuarioState
   TipoPerfil _perfilSelecionado = TipoPerfil.cliente; // Valor padrão
   bool _salvando = false;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.usuario != null) {
+      _nomeController.text = widget.usuario!.nome;
+      _cpfController.text = widget.usuario!.cpf;
+      _telefoneController.text = widget.usuario!.telefone;
+      _emailController.text = widget.usuario!.email;
+      _perfilSelecionado = widget.usuario!.tipoPerfil;
+    }
+  }
+
   void _confirmar() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _salvando = true);
 
-      final erro = await _servicoUsuarios.cadastrarUsuario(
-        _nomeController.text.trim(),
-        _cpfController.text.trim(),
-        _telefoneController.text.trim(),
-        _emailController.text.trim(),
-        _generatedPassword,
-        perfil: _perfilSelecionado,
-      );
+      String? erro;
+
+      if (widget.usuario == null) {
+        //Cria novo usuário
+        erro = await _servicoUsuarios.cadastrarUsuario(
+          _nomeController.text.trim(),
+          _cpfController.text.trim(),
+          _telefoneController.text.trim(),
+          _emailController.text.trim(),
+          _generatedPassword,
+          tipoPerfil: _perfilSelecionado,
+        );
+      } else {
+        erro = await _servicoUsuarios.atualizarUsuario(
+          widget.usuario!.id,
+          _nomeController.text.trim(),
+          _telefoneController.text.trim(),
+          _perfilSelecionado,
+        );
+      }
 
       setState(() => _salvando = false);
 
@@ -103,6 +129,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
                   prefixIcon: Icon(Icons.email),
                 ),
                 validator: (v) => v!.contains('@') ? null : 'E-mail inválido',
+                enabled: widget.usuario == null,
               ),
               const SizedBox(height: 16),
 
@@ -116,6 +143,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
                         border: OutlineInputBorder(),
                       ),
                       validator: (v) => v!.isEmpty ? 'Obrigatório' : null,
+                      enabled: widget.usuario == null,
                     ),
                   ),
                   const SizedBox(width: 12),

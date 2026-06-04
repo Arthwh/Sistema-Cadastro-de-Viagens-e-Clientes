@@ -12,9 +12,9 @@ class ServicoUsuarios {
     String cpf,
     String telefone,
     String email,
-    String password,
-    {TipoPerfil perfil = TipoPerfil.cliente}
-  ) async {
+    String password, {
+    TipoPerfil tipoPerfil = TipoPerfil.cliente,
+  }) async {
     try {
       // Cria o usuário no Firebase Authentication
       UserCredential userCredential = await _auth
@@ -31,7 +31,7 @@ class ServicoUsuarios {
         'email': email,
         'criadoEm': FieldValue.serverTimestamp(), // Salva a data de criação
         'ativo': true,
-        'role': perfil.toString(),
+        'tipoPerfil': tipoPerfil.toString(),
       });
 
       return null;
@@ -77,16 +77,23 @@ class ServicoUsuarios {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> buscaTodosUsuariosAtivos() {
-    return _firestore.collection('users').snapshots();
+    return _firestore
+        .collection('users')
+        .where('ativo', isEqualTo: true)
+        .snapshots();
   }
 
-  Future<String?> atualizarUsuario(Usuario usuario) async {
+  Future<String?> atualizarUsuario(
+    String id,
+    String nome,
+    String telefone,
+    TipoPerfil tipoPerfil,
+  ) async {
     try {
-      await _firestore.collection('users').doc(usuario.id).update({
-        'nome': usuario.nome,
-        'cpf': usuario.cpf,
-        'telefone': usuario.telefone,
-        'email': usuario.email,
+      await _firestore.collection('users').doc(id).update({
+        'nome': nome,
+        'telefone': telefone,
+        'tipoPerfil': tipoPerfil.toString(),
         'atualizadoEm': FieldValue.serverTimestamp(),
       });
 
@@ -108,8 +115,8 @@ class ServicoUsuarios {
   Future<String?> deletarUsuario(Usuario usuario) async {
     try {
       await _firestore.collection('users').doc(usuario.id).update({
-        'updatedAt': FieldValue.serverTimestamp(),
-        'isActive': false,
+        'atualizadoEm': FieldValue.serverTimestamp(),
+        'ativo': false,
       });
 
       return null;

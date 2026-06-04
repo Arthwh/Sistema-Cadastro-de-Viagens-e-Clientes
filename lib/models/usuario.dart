@@ -6,7 +6,7 @@ class Usuario {
   final String cpf;
   final String email;
   final String telefone;
-  final TipoPerfil role;
+  final TipoPerfil tipoPerfil;
 
   Usuario({
     required this.id,
@@ -14,18 +14,20 @@ class Usuario {
     required this.cpf,
     required this.email,
     required this.telefone,
-    required this.role,
+    required this.tipoPerfil,
   });
 
   // Um construtor (Factory) que pega o Map do Firestore e transforma na classe Usuario
   factory Usuario.fromMap(String id, Map<String, dynamic> mapa) {
+    print('Mapa: ');
+    print(mapa);
     return Usuario(
       id: id,
       nome: mapa['nome'] ?? 'Sem nome',
-      cpf: mapa['cpf'] ?? 'Sem CPF',
+      cpf: mapa['cpf']?.toString() ?? 'Sem CPF',
       email: mapa['email'] ?? '',
-      telefone: mapa['telefone'] ?? '',
-      role: TipoPerfil.fromString(mapa['role']),
+      telefone: mapa['telefone']?.toString() ?? '',
+      tipoPerfil: TipoPerfil.fromString(mapa['tipoPerfil'] ?? 'cliente'),
     );
   }
 }

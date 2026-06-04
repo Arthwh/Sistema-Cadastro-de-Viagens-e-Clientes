@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Stream que avisa o app em tempo real se o usuário está logado ou não
   Stream<User?> get loggedUser => _auth.authStateChanges();
@@ -9,7 +11,28 @@ class AuthService {
   // Função para fazer login com E-mail e Senha
   Future<String?> logarComEmailSenha(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential credencial = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Busca o usuario, para verificar se a conta 
+      DocumentSnapshot doc = await _firestore
+          .collection('usuarios')
+          .doc(credencial.user!.uid)
+          .get();
+
+      if (doc.exists) {
+        final dados = doc.data() as Map<String, dynamic>;
+        final bool ativo =
+            dados['ativo'] ?? true;
+
+        if (!ativo) {
+          await _auth.signOut(); // Desloga o token que acabou de ser criado
+          return 'Esta conta foi desativada e não permite mais acesso.';
+        }
+      }
+
       return null; // Retorna null se der tudo certo
     } on FirebaseAuthException catch (e) {
       // Tratamento de erros específicos do Firebase

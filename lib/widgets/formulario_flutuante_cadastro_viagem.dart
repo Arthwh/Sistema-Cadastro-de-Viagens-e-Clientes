@@ -23,6 +23,11 @@ class _FormularioFlutuanteCadastroViagemState
 
   final ServicoViagens _servicoViagens = ServicoViagens();
 
+  DateTime? _dataIda;
+  DateTime? _dataVolta;
+  File? _imagemSelecionada;
+  bool _salvando = false;
+
   @override
   void initState() {
     super.initState();
@@ -38,11 +43,6 @@ class _FormularioFlutuanteCadastroViagemState
       _dataVolta = widget.viagem!.dataVolta;
     }
   }
-
-  DateTime? _dataIda;
-  DateTime? _dataVolta;
-  File? _imagemSelecionada;
-  bool _salvando = false;
 
   // Função para selecionar as datas (Ida e Volta juntas)
   Future<void> _selecionarDatas() async {
