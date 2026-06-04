@@ -15,7 +15,7 @@ class MenuLateral extends StatefulWidget {
 }
 
 class _MenuLateralState extends State<MenuLateral> {
-  final ServicoUsuarios _userService = ServicoUsuarios();
+  final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
   final AuthService _authService = AuthService();
 
   late Future<Usuario?> _dadosUsuario;
@@ -24,7 +24,7 @@ class _MenuLateralState extends State<MenuLateral> {
   void initState() {
     super.initState();
 
-    _dadosUsuario = _userService.buscarDadosDoUsuario();
+    _dadosUsuario = _servicoUsuarios.buscarDadosDoUsuario();
   }
 
   @override
@@ -123,7 +123,7 @@ class _MenuLateralState extends State<MenuLateral> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RoteadorTelas(),
+                      builder: (context) => RoteadorTelas(),
                     ),
                     (route) => false, // Destrui todas as telas anteriores
                   );

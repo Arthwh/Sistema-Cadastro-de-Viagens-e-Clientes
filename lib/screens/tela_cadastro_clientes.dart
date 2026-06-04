@@ -18,7 +18,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _confirmarSenhaController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  final ServicoUsuarios _userService = ServicoUsuarios();
+  final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
   bool _carregando = false;
 
   void _efetuarCadastro() async {
@@ -27,7 +27,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
 
       // Assumindo que você criará esse método no AuthService
       // Ele deve registrar no Firebase Auth e salvar os dados extras no Firestore
-      String? erro = await _userService.cadastrarUsuario(
+      String? erro = await _servicoUsuarios.cadastrarUsuario(
         _nomeController.text.trim(),
         _cpfController.text.trim(),
         _telefoneController.text.trim(),

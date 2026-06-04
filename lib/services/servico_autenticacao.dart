@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:controle_viagens/models/usuario.dart';
+import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
 
   // Stream que avisa o app em tempo real se o usuário está logado ou não
   Stream<User?> get loggedUser => _auth.authStateChanges();
@@ -16,18 +18,13 @@ class AuthService {
         password: password,
       );
 
-      // Busca o usuario, para verificar se a conta 
-      DocumentSnapshot doc = await _firestore
-          .collection('usuarios')
-          .doc(credencial.user!.uid)
-          .get();
+      // Busca o usuario, para verificar se a conta esta ativa
+      Usuario? usuario = await _servicoUsuarios.buscarUsuarioPeloId(
+        credencial.user!.uid,
+      );
 
-      if (doc.exists) {
-        final dados = doc.data() as Map<String, dynamic>;
-        final bool ativo =
-            dados['ativo'] ?? true;
-
-        if (!ativo) {
+      if (usuario != null) {
+        if (!usuario.ativo) {
           await _auth.signOut(); // Desloga o token que acabou de ser criado
           return 'Esta conta foi desativada e não permite mais acesso.';
         }

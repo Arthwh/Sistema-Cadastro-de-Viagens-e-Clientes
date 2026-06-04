@@ -7,6 +7,7 @@ class Usuario {
   final String email;
   final String telefone;
   final TipoPerfil tipoPerfil;
+  final bool ativo;
 
   Usuario({
     required this.id,
@@ -15,6 +16,7 @@ class Usuario {
     required this.email,
     required this.telefone,
     required this.tipoPerfil,
+    required this.ativo,
   });
 
   // Um construtor (Factory) que pega o Map do Firestore e transforma na classe Usuario
@@ -28,6 +30,7 @@ class Usuario {
       email: mapa['email'] ?? '',
       telefone: mapa['telefone']?.toString() ?? '',
       tipoPerfil: TipoPerfil.fromString(mapa['tipoPerfil'] ?? 'cliente'),
+      ativo: mapa['ativo'] ?? true,
     );
   }
 }

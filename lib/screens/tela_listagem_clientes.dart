@@ -18,7 +18,7 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
   final TextEditingController _buscaController = TextEditingController();
   String _textoBusca = '';
 
-  final ServicoUsuarios _userService = ServicoUsuarios();
+  final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
 
   late Stream<QuerySnapshot> _clientesStream;
 
@@ -26,7 +26,7 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
   initState() {
     super.initState();
     // Busca os clientes ao iniciar a tela
-    _clientesStream = _userService.buscaTodosUsuariosAtivos();
+    _clientesStream = _servicoUsuarios.buscaTodosUsuariosAtivos();
   }
 
   @override

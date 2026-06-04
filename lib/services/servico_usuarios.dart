@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:controle_viagens/models/tipo_perfil.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class ServicoUsuarios {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -17,11 +18,7 @@ class ServicoUsuarios {
   }) async {
     try {
       // Cria o usuário no Firebase Authentication
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      // Obtém o uid gerado pelo firebase
-      String uid = userCredential.user!.uid;
+      String uid = await _criarUsuarioNoAuth(email, password);
 
       // Salva os dados extras no Firestore usando o UID como nome do documento
       await _firestore.collection('users').doc(uid).set({
@@ -36,14 +33,36 @@ class ServicoUsuarios {
 
       return null;
     } on FirebaseAuthException catch (e) {
-      // Tratamento de erros específicos do Firebase
       if (e.code == 'invalid-email') {
         return 'O formato do e-mail é inválido.';
       }
-
-      return e.message ?? 'Ocorreu um erro inesperado.';
+      if (e.code == 'email-already-in-use') {
+        return 'Este e-mail já está cadastrado no sistema.';
+      }
+      if (e.code == 'weak-password') {
+        return 'A senha fornecida é muito fraca.';
+      }
+      return e.message ?? 'Ocorreu um erro inesperado no Auth.';
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  /// Método privado para criar um usuário no Auth, usando uma nova conexão com o Firebase
+  Future<String> _criarUsuarioNoAuth(String email, String password) async {
+    FirebaseApp appTemporario = await Firebase.initializeApp(
+      name: 'cadastroTemporario',
+      options: Firebase.app().options,
+    );
+
+    try {
+      UserCredential userCredential = await FirebaseAuth.instanceFor(
+        app: appTemporario,
+      ).createUserWithEmailAndPassword(email: email, password: password);
+
+      return userCredential.user!.uid;
+    } finally {
+      await appTemporario.delete();
     }
   }
 

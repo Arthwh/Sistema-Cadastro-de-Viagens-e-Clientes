@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/screens/tela_listagem_viagens.dart';
+import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,34 +24,59 @@ class MeuAppTurismo extends StatelessWidget {
       title: 'Sistema de Roteiros',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const RoteadorTelas(),
+      home: RoteadorTelas(),
     );
   }
 }
 
 class RoteadorTelas extends StatelessWidget {
-  const RoteadorTelas({super.key});
+  final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
+  RoteadorTelas({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Escuta em tempo real as mudanças de autenticação
     return StreamBuilder<User?>(
       stream: AuthService().loggedUser,
-      builder: (context, snapshot) {
-        // Enquanto o Firebase checa a sessão antiga, mostra carregamento
-        if (snapshot.connectionState == ConnectionState.waiting) {
+      builder: (context, snapshotAuth) {
+        // Enquanto o Firebase Auth checa a sessão, mostra carregamento
+        if (snapshotAuth.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
-        } else if (snapshot.hasError) {
-          return const Center(child: Text("Something Went Wrong!"));
-        }
-        // Se houver dados no snapshot, significa que o usuário está logado
-        else if (snapshot.hasData) {
-          return const TelaListagemViagens();
+        } else if (snapshotAuth.hasError) {
+          return const Scaffold(body: Center(child: Text("Ocorreu um erro!")));
+        } else if (snapshotAuth.hasData && snapshotAuth.data != null) {
+          return FutureBuilder<Usuario?>(
+            future: _servicoUsuarios.buscarUsuarioPeloId(
+              snapshotAuth.data!.uid,
+            ),
+            builder: (context, usuario) {
+              // Enquanto checa no banco de dados, mantém a tela de carregamento
+              if (usuario.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (usuario.hasData && usuario.data != null) {
+                final dadosUsuario = usuario.data;
+                final bool ativo = dadosUsuario!.ativo;
+
+                if (!ativo) {
+                  //Se a conta esta desativada, retorna a tela de login
+                  return const LoginScreen();
+                }
+
+                return const TelaListagemViagens();
+              }
+
+              return const LoginScreen();
+            },
+          );
         }
 
-        // Se não houver dados, exibe a tela de login
+        // Se não houver dados no Auth, exibe a tela de login
         return const LoginScreen();
       },
     );
