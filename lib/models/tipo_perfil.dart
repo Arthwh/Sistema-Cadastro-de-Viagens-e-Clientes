@@ -2,8 +2,7 @@ enum TipoPerfil {
   admin('admin'),
   cliente('cliente'),
   root('root');
-
-  // A String real que será salva no banco de dados
+  
   final String valor; 
   
   const TipoPerfil(this.valor);
@@ -12,7 +11,7 @@ enum TipoPerfil {
   static TipoPerfil fromString(String texto) {
     return TipoPerfil.values.firstWhere(
       (e) => e.valor == texto,
-      orElse: () => TipoPerfil.cliente, // Fallback de segurança: se vier algo bizarro, vira cliente
+      orElse: () => TipoPerfil.cliente, // Se vier algo diferente, vira cliente
     );
   }
 }

@@ -29,7 +29,7 @@ class ServicoUsuarios {
         'email': email,
         'criadoEm': FieldValue.serverTimestamp(), // Salva a data de criação
         'ativo': true,
-        'tipoPerfil': tipoPerfil.toString(),
+        'tipoPerfil': tipoPerfil.name,
       });
 
       return null;
@@ -116,7 +116,7 @@ class ServicoUsuarios {
       await _firestore.collection(_collectionUsuarios).doc(id).update({
         'nome': nome,
         'telefone': telefone,
-        'tipoPerfil': tipoPerfil.toString(),
+        'tipoPerfil': tipoPerfil.name,
         'atualizadoEm': FieldValue.serverTimestamp(),
       });
 

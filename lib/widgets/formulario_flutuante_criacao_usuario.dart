@@ -24,7 +24,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
   final _telefoneController = TextEditingController();
   final _generatedPassword = Random.secure().toString();
 
-  TipoPerfil _perfilSelecionado = TipoPerfil.cliente; // Valor padrão
+  late TipoPerfil _perfilSelecionado; // Valor padrão
   bool _salvando = false;
 
   @override
@@ -38,6 +38,9 @@ class _FormularioFlutuanteCriacaoUsuarioState
       print("TipoPERFILLLLLLLLLLLLL: ");
       print(widget.usuario!.tipoPerfil);
       _perfilSelecionado = widget.usuario!.tipoPerfil;
+      print(_perfilSelecionado);
+    } else {
+      _perfilSelecionado = TipoPerfil.cliente;
     }
   }
 
@@ -46,6 +49,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
       setState(() => _salvando = true);
 
       String? erro;
+      String? mensagemSucesso;
 
       if (widget.usuario == null) {
         //Cria novo usuário
@@ -57,6 +61,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
           _generatedPassword,
           tipoPerfil: _perfilSelecionado,
         );
+        mensagemSucesso = 'Usuário cadastrado com sucesso!';
       } else {
         erro = await _servicoUsuarios.atualizarUsuario(
           widget.usuario!.id,
@@ -64,6 +69,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
           _telefoneController.text.trim(),
           _perfilSelecionado,
         );
+        mensagemSucesso = 'Usuário editado com sucesso!';
       }
 
       setState(() => _salvando = false);
@@ -71,8 +77,8 @@ class _FormularioFlutuanteCriacaoUsuarioState
       if (erro == null && mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Usuário cadastrado com sucesso!'),
+          SnackBar(
+            content: Text(mensagemSucesso),
             backgroundColor: Colors.green,
           ),
         );
