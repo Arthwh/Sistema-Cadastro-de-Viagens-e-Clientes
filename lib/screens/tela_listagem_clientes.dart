@@ -1,3 +1,5 @@
+import 'package:controle_viagens/models/sessao_usuario.dart';
+import 'package:controle_viagens/models/tipo_perfil.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:controle_viagens/widgets/botao_flutuante_responsivo.dart';
@@ -127,7 +129,6 @@ class _TelaListagemClientesState extends State<TelaListagemClientes> {
                           clientesFiltrados[index].data()
                               as Map<String, dynamic>;
                       final idCliente = clientesFiltrados[index].id;
-                      print('IDCLIENTE: ' + idCliente);
                       return ClienteCard(
                         usuario: Usuario.fromMap(idCliente, cliente),
                       );

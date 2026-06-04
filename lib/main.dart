@@ -1,3 +1,4 @@
+import 'package:controle_viagens/models/sessao_usuario.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/screens/tela_listagem_viagens.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
@@ -67,6 +68,9 @@ class RoteadorTelas extends StatelessWidget {
                   return const LoginScreen();
                 }
 
+                // Salva no Singleton
+                SessaoUsuario.instancia.usuario = usuario.data!;
+                print(SessaoUsuario.instancia.usuario);
                 return const TelaListagemViagens();
               }
 

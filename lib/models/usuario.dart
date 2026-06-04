@@ -21,8 +21,6 @@ class Usuario {
 
   // Um construtor (Factory) que pega o Map do Firestore e transforma na classe Usuario
   factory Usuario.fromMap(String id, Map<String, dynamic> mapa) {
-    print('Mapa: ');
-    print(mapa);
     return Usuario(
       id: id,
       nome: mapa['nome'] ?? 'Sem nome',

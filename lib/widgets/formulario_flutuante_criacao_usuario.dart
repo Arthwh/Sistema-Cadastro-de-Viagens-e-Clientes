@@ -35,10 +35,7 @@ class _FormularioFlutuanteCriacaoUsuarioState
       _cpfController.text = widget.usuario!.cpf;
       _telefoneController.text = widget.usuario!.telefone;
       _emailController.text = widget.usuario!.email;
-      print("TipoPERFILLLLLLLLLLLLL: ");
-      print(widget.usuario!.tipoPerfil);
       _perfilSelecionado = widget.usuario!.tipoPerfil;
-      print(_perfilSelecionado);
     } else {
       _perfilSelecionado = TipoPerfil.cliente;
     }

@@ -1,3 +1,4 @@
+import 'package:controle_viagens/models/sessao_usuario.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,7 @@ class AuthService {
       );
 
       if (usuario != null) {
+        print(usuario);
         if (!usuario.ativo) {
           await _auth.signOut(); // Desloga o token que acabou de ser criado
           return 'Esta conta foi desativada e não permite mais acesso.';
@@ -47,6 +49,7 @@ class AuthService {
 
   // Função para deslogar
   Future<void> deslogar() async {
+    SessaoUsuario.instancia.limparSessao();
     await _auth.signOut();
   }
 }

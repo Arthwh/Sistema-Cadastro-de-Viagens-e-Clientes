@@ -50,11 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
       conteudo: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
             constraints: const BoxConstraints(
               maxWidth: 450.0, // Limita o maximo de largura que o card pode ter
-              minWidth: 350.0,
+              minWidth: 250.0,
             ),
             child: Card(
               elevation: 4,
@@ -81,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 32),
 
@@ -113,12 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             value!.isEmpty ? 'Insira sua senha' : null,
                       ),
 
-                      // Alinhamento à direita para o "Esqueci a senha"
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            //TODO: Futura navegação para tela de reset de senha
+                            //TODO: Tela esqueci a senha
                           },
                           child: const Text('Esqueci minha senha'),
                         ),
@@ -144,8 +143,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Linha divisória com botão de cadastro
                       const Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           const Text('Não tem uma conta?'),
                           TextButton(

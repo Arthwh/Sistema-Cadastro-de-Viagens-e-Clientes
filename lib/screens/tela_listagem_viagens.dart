@@ -1,3 +1,5 @@
+import 'package:controle_viagens/models/sessao_usuario.dart';
+import 'package:controle_viagens/models/tipo_perfil.dart';
 import 'package:controle_viagens/services/servico_viagens.dart';
 import 'package:controle_viagens/widgets/botao_flutuante_responsivo.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_cadastro_viagem.dart';
@@ -116,7 +118,7 @@ class _TelaListagemViagensState extends State<TelaListagemViagens> {
                   return ListView.builder(
                     itemCount: viagensFiltradas.length,
                     itemBuilder: (context, index) {
-                      // Converte o JSON do Firebase para o nosso Model
+                      // Converte o JSON do Firebase para o Model
                       final viagemObj = Viagem.fromMap(
                         viagensFiltradas[index].id,
                         viagensFiltradas[index].data() as Map<String, dynamic>,
@@ -132,12 +134,15 @@ class _TelaListagemViagensState extends State<TelaListagemViagens> {
         ),
       ),
 
-      // Botão flutuante para Adicionar Nova Viagem (CRUD: Create)
-      floatingActionButton: const BotaoFlutuanteResponsivo(
-        icone: Icons.add_location_alt,
-        label: 'Nova viagem',
-        formulario: FormularioFlutuanteCadastroViagem(),
-      ),
+      // Botão flutuante para Adicionar Nova Viagem
+      floatingActionButton:
+          SessaoUsuario.instancia.usuario?.tipoPerfil == TipoPerfil.admin
+          ? BotaoFlutuanteResponsivo(
+              icone: Icons.add_location_alt,
+              label: 'Nova viagem',
+              formulario: FormularioFlutuanteCadastroViagem(),
+            )
+          : null,
     );
   }
 }

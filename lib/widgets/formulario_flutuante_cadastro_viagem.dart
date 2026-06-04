@@ -65,12 +65,8 @@ class _FormularioFlutuanteCadastroViagemState
   Future<void> _pegarImagem() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    print(image?.path);
     if (image != null) {
       setState(() => _imagemSelecionada = File(image.path));
-      print('Testeeee imagem: ');
-      print(_imagemSelecionada);
-      print('Testeeee imagem222: ');
     }
   }
 

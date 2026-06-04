@@ -1,3 +1,5 @@
+import 'package:controle_viagens/models/sessao_usuario.dart';
+import 'package:controle_viagens/models/tipo_perfil.dart';
 import 'package:controle_viagens/services/servico_viagens.dart';
 import 'package:controle_viagens/widgets/formulario_confirmacao_acao.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_cadastro_viagem.dart';
@@ -135,10 +137,18 @@ class ViagemCard extends StatelessWidget {
 
   // O Menu Lateral de cada card
   Widget _buildMenuOpcoes(BuildContext context) {
+    final bool isAdmin =
+        SessaoUsuario.instancia.usuario?.tipoPerfil == TipoPerfil.admin;
+
     return PopupMenuButton<String>(
       icon: const Icon(Icons.more_vert),
       onSelected: (acao) {
         if (acao == 'detalhes') print('Ir para Detalhes');
+
+        if (acao == 'whatsapp') {
+          _encaminharWhatsappFalarComGuia(context);
+        }
+
         if (acao == 'passageiros') print('Gerenciar lista de passageiros');
         if (acao == 'editar') _abrirFormularioEdicaoViagem(context);
         if (acao == 'excluir') _deletarViagem(context);
@@ -154,39 +164,64 @@ class ViagemCard extends StatelessWidget {
             ],
           ),
         ),
-        const PopupMenuItem(
-          value: 'passageiros',
-          child: Row(
-            children: [
-              Icon(Icons.group_add, size: 20),
-              SizedBox(width: 8),
-              Text('Passageiros'),
-            ],
+
+        // Exclusivo para Não Admin
+        if (!isAdmin)
+          const PopupMenuItem(
+            value: 'whatsapp',
+            child: Row(
+              children: [
+                Icon(
+                  Icons.chat,
+                  color: Colors.green,
+                  size: 20,
+                ), // Cor que remete ao WhatsApp
+                SizedBox(width: 8),
+                Text('Falar com Guia'),
+              ],
+            ),
           ),
-        ),
-        const PopupMenuItem(
-          value: 'editar',
-          child: Row(
-            children: [
-              Icon(Icons.edit, color: Colors.blue, size: 20),
-              SizedBox(width: 8),
-              Text('Editar'),
-            ],
+
+        // Exclusivo para Admin
+        if (isAdmin) ...[
+          const PopupMenuItem(
+            value: 'passageiros',
+            child: Row(
+              children: [
+                Icon(Icons.group_add, size: 20),
+                SizedBox(width: 8),
+                Text('Passageiros'),
+              ],
+            ),
           ),
-        ),
-        const PopupMenuDivider(),
-        const PopupMenuItem(
-          value: 'excluir',
-          child: Row(
-            children: [
-              Icon(Icons.delete, color: Colors.red, size: 20),
-              SizedBox(width: 8),
-              Text('Excluir', style: TextStyle(color: Colors.red)),
-            ],
+          const PopupMenuItem(
+            value: 'editar',
+            child: Row(
+              children: [
+                Icon(Icons.edit, color: Colors.blue, size: 20),
+                SizedBox(width: 8),
+                Text('Editar'),
+              ],
+            ),
           ),
-        ),
+          const PopupMenuDivider(),
+          const PopupMenuItem(
+            value: 'excluir',
+            child: Row(
+              children: [
+                Icon(Icons.delete, color: Colors.red, size: 20),
+                SizedBox(width: 8),
+                Text('Excluir', style: TextStyle(color: Colors.red)),
+              ],
+            ),
+          ),
+        ],
       ],
     );
+  }
+
+  void _encaminharWhatsappFalarComGuia(BuildContext context) {
+    print('Falar com Guia.');
   }
 
   void _abrirFormularioEdicaoViagem(BuildContext context) {
