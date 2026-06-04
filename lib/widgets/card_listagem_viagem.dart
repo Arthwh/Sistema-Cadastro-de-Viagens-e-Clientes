@@ -1,3 +1,5 @@
+import 'package:controle_viagens/services/servico_viagens.dart';
+import 'package:controle_viagens/widgets/formulario_confirmacao_acao.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_cadastro_viagem.dart';
 import 'package:controle_viagens/widgets/modal_responsivo.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +8,9 @@ import 'package:intl/intl.dart';
 
 class ViagemCard extends StatelessWidget {
   final Viagem viagem;
+  final ServicoViagens _servicoViagens = ServicoViagens();
 
-  const ViagemCard({super.key, required this.viagem});
+  ViagemCard({super.key, required this.viagem});
 
   // Função auxiliar para definir a cor e o texto do status
   Widget _buildStatusBadge() {
@@ -138,7 +141,7 @@ class ViagemCard extends StatelessWidget {
         if (acao == 'detalhes') print('Ir para Detalhes');
         if (acao == 'passageiros') print('Gerenciar lista de passageiros');
         if (acao == 'editar') _abrirFormularioEdicaoViagem(context);
-        if (acao == 'excluir') print('Excluir Viagem');
+        if (acao == 'excluir') _deletarViagem(context);
       },
       itemBuilder: (context) => [
         const PopupMenuItem(
@@ -189,8 +192,26 @@ class ViagemCard extends StatelessWidget {
   void _abrirFormularioEdicaoViagem(BuildContext context) {
     ModalResponsivo.mostrar(
       context,
-      FormularioFlutuanteCadastroViagem(
-        viagem: viagem,
+      FormularioFlutuanteCadastroViagem(viagem: viagem),
+    );
+  }
+
+  void _deletarViagem(BuildContext context) {
+    ModalResponsivo.mostrar(
+      context,
+      FormularioFlutuanteConfirmacaoAcao(
+        aoConfirmar: () async {
+          await _servicoViagens.deletarViagem(viagem);
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Viagem excluída!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        },
       ),
     );
   }

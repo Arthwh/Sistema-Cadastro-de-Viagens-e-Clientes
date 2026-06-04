@@ -7,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 class ServicoUsuarios {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final String collectionUsuarios = 'usuarios';
+  final String _collectionUsuarios = 'usuarios';
 
   Future<String?> cadastrarUsuario(
     String nome,
@@ -22,7 +22,7 @@ class ServicoUsuarios {
       String uid = await _criarUsuarioNoAuth(email, password);
 
       // Salva os dados extras no Firestore usando o UID como nome do documento
-      await _firestore.collection(collectionUsuarios).doc(uid).set({
+      await _firestore.collection(_collectionUsuarios).doc(uid).set({
         'nome': nome,
         'cpf': cpf,
         'telefone': telefone,
@@ -73,7 +73,7 @@ class ServicoUsuarios {
     if (userLogado != null) {
       // Busca o documento com o ID
       DocumentSnapshot doc = await _firestore
-          .collection(collectionUsuarios)
+          .collection(_collectionUsuarios)
           .doc(userLogado.uid)
           .get();
 
@@ -88,7 +88,7 @@ class ServicoUsuarios {
   Future<Usuario?> buscarUsuarioPeloId(String id) async {
     // Busca o documento com o ID
     DocumentSnapshot doc = await _firestore
-        .collection(collectionUsuarios)
+        .collection(_collectionUsuarios)
         .doc(id)
         .get();
 
@@ -101,7 +101,7 @@ class ServicoUsuarios {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> buscaTodosUsuariosAtivos() {
     return _firestore
-        .collection(collectionUsuarios)
+        .collection(_collectionUsuarios)
         .where('ativo', isEqualTo: true)
         .snapshots();
   }
@@ -113,7 +113,7 @@ class ServicoUsuarios {
     TipoPerfil tipoPerfil,
   ) async {
     try {
-      await _firestore.collection(collectionUsuarios).doc(id).update({
+      await _firestore.collection(_collectionUsuarios).doc(id).update({
         'nome': nome,
         'telefone': telefone,
         'tipoPerfil': tipoPerfil.toString(),
@@ -137,7 +137,7 @@ class ServicoUsuarios {
   // SoftDelete
   Future<String?> deletarUsuario(Usuario usuario) async {
     try {
-      await _firestore.collection(collectionUsuarios).doc(usuario.id).update({
+      await _firestore.collection(_collectionUsuarios).doc(usuario.id).update({
         'atualizadoEm': FieldValue.serverTimestamp(),
         'ativo': false,
       });

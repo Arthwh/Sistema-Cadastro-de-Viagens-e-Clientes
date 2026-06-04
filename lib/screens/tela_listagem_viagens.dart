@@ -1,3 +1,4 @@
+import 'package:controle_viagens/services/servico_viagens.dart';
 import 'package:controle_viagens/widgets/botao_flutuante_responsivo.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_cadastro_viagem.dart';
 import 'package:flutter/material.dart';
@@ -17,17 +18,15 @@ class _TelaListagemViagensState extends State<TelaListagemViagens> {
   final TextEditingController _buscaController = TextEditingController();
   String _textoBusca = '';
 
+  final ServicoViagens _servicoViagens = ServicoViagens();
+
   // Variável para guardar a conexão com o banco
   late Stream<QuerySnapshot> _viagensStream;
 
   @override
   void initState() {
     super.initState();
-    // Inicia a busca APENAS UMA VEZ ordenando pelas viagens mais próximas primeiro
-    _viagensStream = FirebaseFirestore.instance
-        .collection('viagens')
-        .orderBy('dataIda', descending: false)
-        .snapshots();
+    _viagensStream = _servicoViagens.buscaTodasViagensAtivas();
   }
 
   @override
@@ -135,9 +134,10 @@ class _TelaListagemViagensState extends State<TelaListagemViagens> {
 
       // Botão flutuante para Adicionar Nova Viagem (CRUD: Create)
       floatingActionButton: const BotaoFlutuanteResponsivo(
-        icone: Icons.add_location_alt, 
-        label: 'Nova viagem', 
-        formulario: FormularioFlutuanteCadastroViagem()),
+        icone: Icons.add_location_alt,
+        label: 'Nova viagem',
+        formulario: FormularioFlutuanteCadastroViagem(),
+      ),
     );
   }
 }
