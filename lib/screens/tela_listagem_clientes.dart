@@ -1,5 +1,3 @@
-import 'package:controle_viagens/models/sessao_usuario.dart';
-import 'package:controle_viagens/models/tipo_perfil.dart';
 import 'package:controle_viagens/models/usuario.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:controle_viagens/widgets/botao_flutuante_responsivo.dart';

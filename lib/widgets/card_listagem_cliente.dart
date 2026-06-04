@@ -1,4 +1,5 @@
 import 'package:controle_viagens/models/usuario.dart';
+import 'package:controle_viagens/services/servico_mensageria_whatsapp.dart';
 import 'package:controle_viagens/services/servico_usuarios.dart';
 import 'package:controle_viagens/widgets/formulario_confirmacao_acao.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_criacao_usuario.dart';
@@ -9,6 +10,7 @@ import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 class ClienteCard extends StatelessWidget {
   final Usuario usuario;
   final ServicoUsuarios _servicoUsuarios = ServicoUsuarios();
+  final ServicoWhatsapp _servicoWhatsapp = ServicoWhatsapp();
 
   ClienteCard({super.key, required this.usuario});
 
@@ -58,7 +60,7 @@ class ClienteCard extends StatelessWidget {
       icon: const Icon(Icons.more_vert),
       onSelected: (String acaoEscolhida) {
         if (acaoEscolhida == 'whatsapp') {
-          print('Abrir Whats para ${usuario.nome}');
+          _chamarClienteWhatsapp(context);
         } else if (acaoEscolhida == 'editar') {
           _abrirFormularioEdicaoUsuario(context);
         } else if (acaoEscolhida == 'excluir') {
@@ -99,6 +101,10 @@ class ClienteCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _chamarClienteWhatsapp(BuildContext context) {
+    _servicoWhatsapp.guiaChamaCliente(usuario.telefone, usuario.nome);
   }
 
   void _abrirFormularioEdicaoUsuario(BuildContext context) {

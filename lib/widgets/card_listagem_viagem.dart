@@ -1,5 +1,6 @@
 import 'package:controle_viagens/models/sessao_usuario.dart';
 import 'package:controle_viagens/models/tipo_perfil.dart';
+import 'package:controle_viagens/services/servico_mensageria_whatsapp.dart';
 import 'package:controle_viagens/services/servico_viagens.dart';
 import 'package:controle_viagens/widgets/formulario_confirmacao_acao.dart';
 import 'package:controle_viagens/widgets/formulario_flutuante_cadastro_viagem.dart';
@@ -11,6 +12,7 @@ import 'package:intl/intl.dart';
 class ViagemCard extends StatelessWidget {
   final Viagem viagem;
   final ServicoViagens _servicoViagens = ServicoViagens();
+  final ServicoWhatsapp _servicoWhatsapp = ServicoWhatsapp();
 
   ViagemCard({super.key, required this.viagem});
 
@@ -87,15 +89,31 @@ class ViagemCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             // Status e Datas
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildStatusBadge(),
-                const SizedBox(width: 12),
-                const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(
-                  '${formatadorData.format(viagem.dataIda)} até ${formatadorData.format(viagem.dataVolta)}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 14,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 4),
+
+                    Expanded(
+                      child: Text(
+                        '${formatadorData.format(viagem.dataIda)} até ${formatadorData.format(viagem.dataVolta)}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -221,7 +239,10 @@ class ViagemCard extends StatelessWidget {
   }
 
   void _encaminharWhatsappFalarComGuia(BuildContext context) {
-    print('Falar com Guia.');
+    _servicoWhatsapp.turistaChamaGuia(
+      viagem.destino,
+      viagem.dataIda.toString(),
+    );
   }
 
   void _abrirFormularioEdicaoViagem(BuildContext context) {
